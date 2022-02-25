@@ -1,10 +1,11 @@
 import {createRouter as _createRouter, createWebHistory} from "vue-router";
 
+
 /**
  * 创建路由组件
- * @returns {Router}
+ * @returns 
  */
-export function createRouter() {
+function createRouter() {
     let routes = makeDynamicRoutes()
     routes.push(...makeConstantRoutes())
     return _createRouter({
@@ -43,3 +44,7 @@ function makeConstantRoutes() {
         }
     ]
 }
+
+let router = createRouter()
+
+export default router

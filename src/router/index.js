@@ -1,9 +1,9 @@
 import {createRouter as _createRouter, createWebHistory} from "vue-router";
-
+import Layout from "@/layout/index.vue";
 
 /**
  * 创建路由组件
- * @returns 
+ * @returns
  */
 function createRouter() {
     let routes = makeDynamicRoutes()
@@ -16,18 +16,42 @@ function createRouter() {
 
 /**
  * 创建动态路由
+ *
+ * base-pages目录下默认使用Layout
+ * 其他目录不使用
+ * 首页默认为base-pages/home.vue
+ *
  * @returns {Object}
  */
 function makeDynamicRoutes() {
-    const pages = import.meta.glob('../pages/**/*.vue')
+    const basePages = import.meta.glob('../pages/base-pages/**/*.vue')
+    const customPages = import.meta.glob('../pages/custom-pages/**/*.vue')
+    let routes = [{
+        path: '/',
+        name: 'layout',
+        component: Layout,
+        children: []
+    }]
 
-    return Object.keys(pages).map(path => {
-        const name = path.match(/\.\/pages(.*)\.vue$/)[1].toLowerCase()
+    routes[0].children.push(...Object.keys(basePages).map(path => {
+        const name = path.match(/\/pages\/base-pages(.*)\.vue$/)[1].toLowerCase()
         return {
-            path: name === '/home' ? '/' : name,
-            component: pages[path]
+            path: name === '/home' ? '' : name,
+            name,
+            component: basePages[path]
         }
-    })
+    }))
+
+    routes.unshift(...Object.keys(customPages).map(path => {
+        const name = path.match(/\/pages\/custom-pages(.*)\.vue$/)[1].toLowerCase()
+        return {
+            path: name,
+            name,
+            component: customPages[path]
+        }
+    }))
+
+    return routes
 }
 
 /**

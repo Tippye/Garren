@@ -71,4 +71,47 @@ function makeConstantRoutes() {
 
 let router = createRouter()
 
+/**
+ * 获取Token
+ * TODO：实现登录后删除此方法
+ * @returns {boolean}
+ */
+function getToken() {
+    return true
+}
+
+//免登录页面白名单
+const whiteList = ['/', '/about', '/login', 'register']
+
+/**
+ * 导航守卫,可在此配置权限
+ *
+ * @Doc: https://router.vuejs.org/zh/guide/advanced/navigation-guards.html
+ */
+router.beforeEach((to, from, next) => {
+    //TODO：进度条开始加载
+    if (getToken()) {
+        // to.meta.title && store.dispatch('settings/setTitle',to.meta.title)
+
+        if (to.path === '/login') {
+            //已经登录的瞎凑什么热闹
+            next({path: '/'})
+            //TODO：进度条完成
+        } else {
+            next()
+        }
+    } else {
+        if (whiteList.indexOf(to.path) > -1) {
+            next()
+        } else {
+            next({path: '/login'})
+            //TODO: 进度条完成
+        }
+    }
+});
+
+router.afterEach(() => {
+    //TODO: 进度条完成
+})
+
 export default router

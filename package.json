@@ -8,19 +8,20 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "axios": "^0.26.0",
+    "element-plus": "^2.0.2",
+    "js-cookies": "^1.0.4",
     "vue": "^3.2.25",
     "vue-router": "^4.0.12",
-    "vuex": "^4.0.2",
-    "element-plus": "^2.0.2",
-    "axios": "^0.26.0"
+    "vuex": "^4.0.2"
   },
   "devDependencies": {
+    "@iarna/toml": "^2.2.5",
     "@vitejs/plugin-vue": "^2.2.0",
-    "vite": "^2.8.0",
-    "vite-plugin-compression": "^0.5.1",
     "@vue/compiler-sfc": "^3.2.31",
     "@vue/server-renderer": "^3.2.31",
     "sass": "^1.49.9",
-    "@iarna/toml": "^2.2.5"
+    "vite": "^2.8.0",
+    "vite-plugin-compression": "^0.5.1"
   }
 }

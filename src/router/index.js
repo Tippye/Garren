@@ -1,5 +1,6 @@
 import {createRouter as _createRouter, createWebHistory} from "vue-router";
 import Layout from "@/layout/index.vue";
+import {getToken} from "@/utils/auth";
 
 /**
  * 创建路由组件
@@ -70,15 +71,6 @@ function makeConstantRoutes() {
 }
 
 let router = createRouter()
-
-/**
- * 获取Token
- * TODO：实现登录后删除此方法
- * @returns {boolean}
- */
-function getToken() {
-    return true
-}
 
 //免登录页面白名单
 const whiteList = ['/', '/about', '/login', 'register']

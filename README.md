@@ -1,7 +1,13 @@
-# Vue 3 + Vite
+# Garren
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+> 新一代Vue3+Vite+ElementPlus搭建的个人博客前端
 
-## Recommended IDE Setup
+![1-2006011529244M](http://static.tippy.icu/blogImg/1-2006011529244M.jpg)
 
-- [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar)
+## 服务端
+
+本项目是使用[inis API](https://inis.cc)开发的前端博客主题，可自行依照[inis API文档](https://docs.inis.cc/#/)开发部署
+
+## 安装
+
+Tippy正在努力开发中～ 敬请期待

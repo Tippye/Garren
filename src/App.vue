@@ -2,6 +2,7 @@
 import Cookie from "js-cookies"
 import {onMounted} from "vue";
 import {useTheme} from "@/utils/themes";
+import locale from 'element-plus/lib/locale/lang/zh-cn'
 
 onMounted(() => {
   //设置主题
@@ -10,7 +11,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <router-view/>
+  <el-config-provider :locale="locale">
+    <router-view/>
+  </el-config-provider>
 </template>
 
 <style>

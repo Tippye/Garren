@@ -1,11 +1,11 @@
 <template>
-  <h1>Home</h1>
+  <h1>{{ $t('home.test') }}</h1>
 </template>
 
-<script>
-export default {
-  name: "Home"
-}
+<script setup>
+import {inject} from "vue";
+
+const $t = inject('$t')
 </script>
 
 <style scoped>

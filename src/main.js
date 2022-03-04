@@ -12,8 +12,10 @@ let locale
 //控制 element-plus 组件语言
 if (i18n.global.fallbackLocale === 'en') {
     locale = en;
+    document.querySelector("html").setAttribute('lang', 'en')
 } else {
     locale = zhCn;
+    document.querySelector("html").setAttribute('lang', 'zh')
 }
 
 createApp(App).use(ElementPlus, {locale}).use(router).use(store).provide('$t', $t).mount('#app')

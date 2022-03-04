@@ -11,7 +11,7 @@ import {saveAs} from 'file-saver'
 let downloadLoadingInstance;
 export let isRelogin = {show: false}
 
-axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
+axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded'
 const service = axios.create({
     baseURL: Config.server,
     timeout: 1000
@@ -23,7 +23,7 @@ service.interceptors.request.use(config => {
     const isToken = (config.headers || {}).isToken === false
     // 是否需要防止数据重复提交
     const isRepeatSubmit = (config.headers || {}).repeatSubmit === false
-    if (getToken() && !isToken) config.headers['Authorization'] = 'Bearer ' + getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
+    if (getToken() && !isToken) config.headers['login-token'] = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
     // get请求映射params参数
     if (config.method === 'get' && config.params) {
         let url = config.url + '?' + tansParams(config.params);
@@ -105,7 +105,7 @@ service.interceptors.response.use(
         }
     },
     error => {
-        console.log('err' + error)
+        console.log('err: ' + error)
         let {message} = error;
         if (message === "Network Error") {
             message = "后端接口连接异常";

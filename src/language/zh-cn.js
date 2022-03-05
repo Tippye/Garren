@@ -6,5 +6,13 @@ export default {
     },
     home: {
         test: '这是首页'
+    },
+    nav: {
+        home: '首页',
+        link: '友链',
+        archive: '归档',
+        shuoshuo: '说说',
+        about: '关于',
+        resource: '资源'
     }
 }

@@ -1,5 +1,13 @@
+@forward 'element-plus/theme-chalk/src/common/var.scss' with (
+  $colors: (
+    'primary': (
+      'base': #FDA4AF,
+    ),
+  ),
+);
+
 @import "element-plus/theme-chalk/src/index";
 
-body {
-  background: var(--background-color);
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

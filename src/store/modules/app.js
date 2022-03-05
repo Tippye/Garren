@@ -6,10 +6,13 @@ const state = {
         // 侧边栏开关状态
         opened: Cookies.getItem('sidebarStatus') ? !!+Cookies.getItem('sidebarStatus') : true,
         // 侧边栏开启/关闭是否伴随动画
-        withoutAnimation: false
+        withoutAnimation: false,
+        notice: null
     },
     //登录设备：web | desktop | android | ios
-    device: 'web'
+    device: 'web',
+    //当前登录用户
+    user: null
 }
 
 const mutations = {

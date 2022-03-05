@@ -13,7 +13,7 @@ const state = {
     //站点描述
     site_desc: Cookies.getItem('site_desc') | '',
     //站点头像
-    site_avatar: Cookies.getItem('site_avatar') || '',
+    site_avatar: Cookies.getItem('site_avatar') || 'http://api.tippy.icu/storage/users/uid-1/my-head.png',
     //备案信息
     record_info: Cookies.getItem('record_info') || '',
     //工信部地址

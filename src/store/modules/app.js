@@ -1,10 +1,10 @@
-import Cookies from 'js-cookies'
+import Cookie from 'js-cookie'
 
 const state = {
     //侧边栏
     sidebar: {
         // 侧边栏开关状态
-        opened: Cookies.getItem('sidebarStatus') ? !!+Cookies.getItem('sidebarStatus') : true,
+        opened: Cookie.get('sidebarStatus') ? !!+Cookie.get('sidebarStatus') : true,
         // 侧边栏开启/关闭是否伴随动画
         withoutAnimation: false,
         notice: null
@@ -19,12 +19,12 @@ const mutations = {
     TOGGLE_SIDEBAR: (state) => {
         state.sidebar.opened = !state.sidebar.opened
         state.sidebar.withoutAnimation = false
-        Cookies.setItem('sidebarStatus', state.sidebar.opened ? 1 : 0)
+        Cookie.set('sidebarStatus', state.sidebar.opened ? 1 : 0)
     },
     CLOSE_SIDEBAR: (state, withoutAnimation) => {
         state.sidebar.opened = false
         state.sidebar.withoutAnimation = withoutAnimation
-        Cookies.setItem('sidebarStatus', 0)
+        Cookie.set('sidebarStatus', 0)
     },
     TOGGLE_DEVICE: (state, decive) => {
         state.device = decive

@@ -14,5 +14,9 @@ export default {
         shuoshuo: '说说',
         about: '关于',
         resource: '资源'
+    },
+    avatar_menu: {
+        self_material: '个人资料',
+        admin_manage: '后台管理'
     }
 }

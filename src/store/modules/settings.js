@@ -1,5 +1,5 @@
-import Cookies from 'js-cookies'
-import {useTheme} from "@/utils/themes";
+import Cookie from 'js-cookie'
+// import {useTheme} from "@/utils/themes";
 
 const DEFAULT_THEME = 'default'
 
@@ -7,28 +7,30 @@ const state = {
     //显示设置页
     showSettings: false,
     //站点标题
-    site_title: Cookies.getItem('site_title') || '',
+    site_title: Cookie.get('site_title') || '',
     //favicon地址
-    site_fav: Cookies.getItem('site_fav') || './favicon.ico',
+    site_fav: Cookie.get('site_fav') || './favicon.ico',
     //站点描述
-    site_desc: Cookies.getItem('site_desc') | '',
+    site_desc: Cookie.get('site_desc') | '',
     //站点头像
-    site_avatar: Cookies.getItem('site_avatar') || 'http://api.tippy.icu/storage/users/uid-1/my-head.png',
+    site_avatar: Cookie.get('site_avatar') || 'http://api.tippy.icu/storage/users/uid-1/my-head.png',
     //备案信息
-    record_info: Cookies.getItem('record_info') || '',
+    record_info: Cookie.get('record_info') || '',
     //工信部地址
-    record_url: Cookies.getItem('record_url') || 'https://beian.miit.gov.cn',
+    record_url: Cookie.get('record_url') || 'https://beian.miit.gov.cn',
     //主题
-    site_theme: Cookies.getItem('site_theme') || DEFAULT_THEME,
+    site_theme: Cookie.get('site_theme') || DEFAULT_THEME,
     //夜间模式
-    darkMode: false
+    darkMode: false,
+    //站点语言
+    lang: Cookie.get('lang') || 'zh'
 }
 
 const mutations = {
     CHANGE_SETTING: (state, {key, value}) => {
         if (state.hasOwnProperty(key)) {
             state[key] = value
-            Cookies.setItem(key, value)
+            Cookie.set(key, value)
         }
     }
 }
@@ -46,11 +48,23 @@ const actions = {
      * @return {Promise<void>}
      */
     async toggleDarkMode({commit}, {value}) {
-        useTheme(value ? 'dark' : state.site_theme)
-            .then(() => {
-                commit('CHANGE_SETTING', {key: 'darkMode', value})
-            })
-    }
+        value ? document.documentElement.classList.add('dark') : document.documentElement.classList.remove('dark')
+        console.log('toggleDarkMode')
+        commit('CHANGE_SETTING', {key: 'darkMode', value})
+    },
+    /**
+     * 更改站点语言
+     *
+     * @param commit
+     * @param state
+     * @param lang      'zh'|'en'
+     */
+    changeLanguage({commit, state}, lang = 'zh') {
+        return new Promise(resolve => {
+            commit('CHANGE_SETTING', {key: 'lang', value: lang})
+            resolve(state.lang)
+        })
+    },
 }
 
 export default {

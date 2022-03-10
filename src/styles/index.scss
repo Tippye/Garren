@@ -13,7 +13,17 @@
 @tailwind utilities;
 
 @layer base {
+  * {
+    @apply text-gray-darkest;
+    @apply transition-colors;
+  }
+
   body {
-    @apply dark:bg-gray-700;
+    @apply dark:bg-gray-darkest;
+  }
+
+  svg, svg * {
+    //chrome svg默认颜色不继承
+    color: inherit;
   }
 }

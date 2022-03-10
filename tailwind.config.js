@@ -111,6 +111,11 @@ module.exports = {
                 slideInUp: 'slideInUp 1s',
                 slideInLeft: 'slideInLeft 1s',
                 slideInRight: 'slideInRight 1s'
+            },
+            colors: {
+                gray: {
+                    darkest: '#303133'
+                }
             }
         },
     },

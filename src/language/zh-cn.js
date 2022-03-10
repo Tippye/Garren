@@ -1,4 +1,5 @@
 export default {
+    language: "简体中文",
     login: {
         login: '登录',
         register: '注册',

@@ -1,4 +1,5 @@
 export default {
+    language: "English",
     login: {
         login: 'Login',
         register: 'Register',

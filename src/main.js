@@ -8,6 +8,14 @@ import zhCn from "element-plus/lib/locale/lang/zh-cn";
 import en from "element-plus/lib/locale/lang/en"
 import {$t, i18n} from "@/language";
 
+//监听系统深色模式的切换
+store.dispatch("settings/toggleDarkMode", {value: window.matchMedia('(prefers-color-scheme: dark)').matches})
+window
+    .matchMedia('(prefers-color-scheme: dark)')
+    .addEventListener('change', ({matches: isDark}) => {
+        store.dispatch("settings/toggleDarkMode", {value: isDark})
+    })
+
 let locale
 //控制 element-plus 组件语言
 if (i18n.global.fallbackLocale === 'en') {

@@ -3,36 +3,75 @@
       :class="['login',`login_${login_back}`]"
       :style="{backgroundImage:login_back==='randomImage'?`url('${Config.server}/api/file/random')`:''}"
   >
-    <div id="login_box" class="w-96 p-5 backdrop-blur-lg rounded-3xl text-gray-darkest shadow-sm">
+    <div id="login_box">
       <div class="logo"><span>Garren<span data-letters="Garren"></span><span data-letters="Garren"></span></span></div>
-      <el-form :model="login_form">
-        <div class="label">账号：</div>
-        <el-input v-model="login_form.account" placeholder="账号/邮箱/手机号"/>
-        <div class="label">密码：</div>
-        <el-input v-model="login_form.password" placeholder="密码" show-password type="password"/>
-        <el-button class="my-5 text-rose-300 hover:text-white" type="primary" @click="login">登录</el-button>
-      </el-form>
+      <div class="form_item">
+        <input placeholder="账号" type="text"/>
+        <div class="indicator"/>
+        <el-icon class="text-white text-2xl">
+          <user/>
+        </el-icon>
+      </div>
+      <div :class="passwordIptShow?'active':''" class="form_item password" @click="e=>inputPwd(e)">
+        <input ref="pwd" :type="passwordShow?'text':'password'" class="password-input" maxlength="9" type="password"
+               @focusout="passwordIptShow=false"/>
+        <div :class="[passwordShow?'active':'']" class="check" @click="showPassword">
+          <svg>
+            <use xlink:href="#check"/>
+          </svg>
+        </div>
+        <div class="lock">
+          <svg>
+            <path
+                d="M 162 29 C 160.343 29 159 27.657 159 26 L 159 14 C 159 12.343 160.343 11 162 11 L 176 11 C 177.657 11 179 12.343 179 14 L 179 26 C 179 27.657 177.657 29 176 29 L -48.887 29.104 M 162.5 11 L 162.5 4 C 162.5 2.343 163.843 1 165.5 1 L 172.5 1 C 174.157 1 175.5 2.343 175.5 4 L 175.5 11"/>
+          </svg>
+        </div>
+        <div class="indicator"></div>
+      </div>
     </div>
+    <svg style="display: none;" xmlns="http://www.w3.org/2000/svg">
+      <symbol id="check" viewBox="0 0 20 15" xmlns="http://www.w3.org/2000/svg">
+        <polyline points="1 8.53 6.33 14 19 1"/>
+      </symbol>
+    </svg>
   </div>
 </template>
 
 <script setup>
 import {ref} from "vue";
 import Config from "/garren.config"
+import {User} from "@element-plus/icons-vue"
 
-const login_back = 'randomImage'
+const pwd = ref(null)
+
+// const login_back = 'randomImage';
+const login_back = 'default'
 
 let login_form = ref({
   account: '',
   password: ''
 })
 
+let passwordIptShow = ref(false)
+let passwordShow = ref(false)
+
 const login = () => {
   console.log(login_form.value)
+}
+
+function inputPwd(e) {
+  if (e.offsetX > (180 - 22) && passwordIptShow.value) {
+    debugger
+    passwordShow.value = !passwordShow.value
+    return
+  }
+  passwordIptShow.value = true
+  pwd.value.focus()
 }
 </script>
 
 <style lang="scss" scoped>
+$form_item-width: 180px;
 @keyframes movement {
   0%, 100% {
     background-size: 130vmax 130vmax,
@@ -84,10 +123,36 @@ const login = () => {
   }
 }
 
+@keyframes wink-animation {
+  0% {
+    height: 6px;
+  }
+  10% {
+    height: 1px;
+  }
+  20% {
+    height: 6px;
+  }
+  80% {
+    height: 6px;
+  }
+  90% {
+    height: 1px;
+  }
+  100% {
+    height: 6px;
+  }
+}
+
 @font-face {
   font-family: "Dosis";
   font-style: normal;
   src: url("http://fonts.gstatic.com/s/dosis/v25/HhyJU5sn9vOmLxNkIwRSjTVNWLEJt7Ql2xMCbKsUPqjm.woff") format("woff");
+}
+
+#login_box {
+  @apply p-5 px-10 box-content backdrop-blur-lg rounded-3xl text-gray-darkest shadow-sm;
+  width: $form_item-width;
 }
 
 .logo {
@@ -166,6 +231,48 @@ const login = () => {
   }
 }
 
+.form_item {
+  display: flex;
+  flex-wrap: nowrap;
+  margin: 20px 0;
+  position: relative;
+
+  input {
+    @apply transition-all outline-none;
+    background: none;
+    margin-right: 10px;
+    width: 100%;
+    position: relative;
+    color: #ffffff;
+    opacity: 0;
+
+    &::placeholder {
+      color: rgba(255, 255, 255, .6);
+    }
+
+    &:focus {
+      opacity: 1;
+    }
+  }
+
+  .indicator {
+    @apply transition-all;
+    transition-duration: .55s;
+    width: 10%;
+    opacity: 0;
+    height: 2px;
+    background: #ffffff;
+    position: absolute;
+    right: 0;
+    bottom: -5px;
+  }
+
+  & > input:focus + .indicator {
+    width: 100%;
+    opacity: 1;
+  }
+}
+
 .login {
   @apply min-h-screen;
   @apply flex;
@@ -220,42 +327,183 @@ const login = () => {
     @apply bg-center;
     @apply animate-none;
   }
-
-  .label {
-    @apply mt-3;
-    @apply mb-1;
-  }
 }
 
-#login_box {
-  .label {
-    @apply text-white;
+.password {
+  $svg-color: #fff;
+  $text-color: #fff;
+  $medium-color: #ffa850;
+  $height: 30px;
+  @apply flex items-center justify-center relative;
+  & input {
+    @apply absolute appearance-none cursor-pointer m-0 p-0;
+    background: none;
+    outline: none;
+    border: 0;
+    width: 0;
+    height: $height;
+    transition: all .6s ease-out;
+    color: $text-color;
+    font: 400 14px 'Poppins', sans-serif;
+    z-index: 1;
   }
-}
-</style>
 
-<style lang="scss">
-#login_box {
-  .el-input {
-    @apply w-full;
-    input {
-      @apply rounded-xl;
-      @apply bg-transparent;
-      @apply text-white;
-      @apply h-12;
-      @apply focus:border-rose-300;
-      border: 1px solid rgba(255, 255, 255, .6);
+  .check {
+    display: none;
+    width: $height;
+    height: $height;
+    padding: 5px 2px 5px 8px;
+    box-sizing: border-box;
+    position: absolute;
+    right: 0;
+    z-index: 3;
+    cursor: pointer;
 
-
-      &::placeholder {
-        @apply text-white;
-      }
+    svg {
+      fill: none;
+      stroke: red;
+      stroke-width: 2px;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dashoffset: 26;
+      stroke-dasharray: 26;
+      transition: stroke-dashoffset .6s ease;
     }
   }
 
-  .el-button {
-    span {
-      color: inherit;
+  .lock {
+    width: $form_item-width;
+    height: $height;
+    position: absolute;
+    right: 0;
+
+    &::before, &::after {
+      content: "";
+      position: absolute;
+      background: $svg-color;
+      pointer-events: none;
+    }
+
+    &::before {
+      right: 8px;
+      bottom: 9px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      -webkit-transition: bottom .2s ease-out .4s, right .4s ease-out;
+      transition: bottom .2s ease-out .4s, right .4s ease-out;
+    }
+
+    &::after {
+      right: 10px;
+      bottom: 5px;
+      width: 2px;
+      height: 10px;
+      border-radius: 2px;
+      -webkit-transition: bottom .4s ease-out .4s, border-radius .2s ease-out .4s, width .2s ease-out .4s, right .4s ease-out, height .4s ease .8s;
+      transition: bottom .4s ease-out .4s, border-radius .2s ease-out .4s, width .2s ease-out .4s, right .4s ease-out, height .4s ease .8s;
+    }
+
+    svg {
+      display: block;
+      height: 100%;
+      width: 100%;
+      fill: none;
+      stroke: $svg-color;
+      stroke-width: 2px;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dashoffset: 263;
+      stroke-dasharray: 0 263 71 263;
+      -webkit-transition: all .6s ease-out;
+      transition: all .6s ease-out;
+    }
+  }
+
+  &.active {
+    input {
+      width: 100%;
+      padding: 0 $height 0 5px;
+      cursor: text;
+      box-sizing: border-box;
+    }
+
+    .check {
+      @apply flex;
+      position: absolute;
+      z-index: 10;
+
+      &.submit {
+        svg {
+          stroke-dashoffset: 0;
+          stroke-dasharray: 26;
+        }
+
+        & ~ .lock {
+          &::before, &::after {
+            opacity: 0;
+            right: 9px;
+            -webkit-transition: right .2s ease-out, opacity .2s ease-out;
+            transition: right .2s ease-out, opacity .2s ease-out;
+          }
+        }
+      }
+
+      &.active {
+        & ~ .lock {
+          &::before {
+            animation: wink-animation .6s linear alternate;
+            background: $medium-color;
+          }
+
+          &::after {
+            animation: wink-animation .6s linear alternate;
+            background: $medium-color;
+          }
+        }
+      }
+    }
+
+    .lock {
+      &::before {
+        right: 3px;
+        bottom: 11px;
+        transition: bottom .1s ease-out .1s, right .4s ease-out .2s, background .2s ease-out, opacity .2s ease-out;
+      }
+
+      &::after {
+        right: 15px;
+        bottom: 11px;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        transition: height .2s ease-out, bottom .2s ease-out, border-radius .2s ease-out .2s, width .2s ease-out .2s, right .4s ease-out .2s, background .2s ease-out, opacity .2s ease-out;
+      }
+
+      svg {
+        stroke-dashoffset: 207;
+        stroke-dasharray: 0 263 177 263;
+      }
+    }
+
+    .indicator {
+      @apply w-72;
+      height: $height;
+      position: absolute;
+      right: 0;
+
+      &::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 0;
+        height: 2px;
+        border-radius: 5px;
+        background: transparent;
+        z-index: 3;
+        transition: background .6s ease-out, width .6s ease-out;
+      }
     }
   }
 }

@@ -28,7 +28,7 @@ export function login({account, password}) {
     return request({
         url,
         method: 'post',
-        data: {
+        params: {
             "mode": "login",
             account,
             password

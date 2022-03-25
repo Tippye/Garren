@@ -3,75 +3,108 @@
       :class="['login',`login_${login_back}`]"
       :style="{backgroundImage:login_back==='randomImage'?`url('${Config.server}/api/file/random')`:''}"
   >
-    <div id="login_box">
-      <div class="logo"><span>Garren<span data-letters="Garren"></span><span data-letters="Garren"></span></span></div>
+    <div id="login_box" class="glasses">
+      <div class="logo"><span>{{ Config.name }}<span :data-letters="Config.name"></span><span
+          :data-letters="Config.name"></span></span></div>
       <div class="form_item">
-        <input placeholder="账号" type="text"/>
-        <div class="indicator"/>
-        <el-icon class="text-white text-2xl">
+        <el-icon>
           <user/>
         </el-icon>
+        <input ref="account" v-model="login_form.account" :placeholder="$t('login.account_placeholder')" type="text"
+               @keyup.enter="pwd.focus()"/>
+        <div class="indicator"/>
       </div>
-      <div :class="passwordIptShow?'active':''" class="form_item password" @click="e=>inputPwd(e)">
-        <input ref="pwd" :type="passwordShow?'text':'password'" class="password-input" maxlength="9" type="password"
-               @focusout="passwordIptShow=false"/>
-        <div :class="[passwordShow?'active':'']" class="check" @click="showPassword">
-          <svg>
-            <use xlink:href="#check"/>
-          </svg>
-        </div>
-        <div class="lock">
-          <svg>
-            <path
-                d="M 162 29 C 160.343 29 159 27.657 159 26 L 159 14 C 159 12.343 160.343 11 162 11 L 176 11 C 177.657 11 179 12.343 179 14 L 179 26 C 179 27.657 177.657 29 176 29 L -48.887 29.104 M 162.5 11 L 162.5 4 C 162.5 2.343 163.843 1 165.5 1 L 172.5 1 C 174.157 1 175.5 2.343 175.5 4 L 175.5 11"/>
-          </svg>
-        </div>
-        <div class="indicator"></div>
+      <div class="form_item">
+        <el-icon>
+          <lock/>
+        </el-icon>
+        <input ref="pwd" v-model="login_form.password" :placeholder="$t('login.password_placeholder')"
+               :type="passwordShow?'text':'password'"
+               class="pwd" @focusin="passwordFocus=true"
+               @focusout="passwordFocus=false"/>
+        <div class="indicator"/>
+        <div :class="['show_pwd',passwordShow?'active':'']" @click="passwordShow = !passwordShow"/>
+      </div>
+      <div class="form_item">
+        <span class="link"><router-link to="/forget">{{ $t('login.forget') }}</router-link></span>
+        <span class="link"><router-link to="/register">{{ $t('login.register') }}</router-link></span>
+      </div>
+      <div class="form_item">
+        <el-button class="login_btn" @click="login">{{ $t('login.login') }}</el-button>
       </div>
     </div>
-    <svg style="display: none;" xmlns="http://www.w3.org/2000/svg">
-      <symbol id="check" viewBox="0 0 20 15" xmlns="http://www.w3.org/2000/svg">
-        <polyline points="1 8.53 6.33 14 19 1"/>
-      </symbol>
-    </svg>
   </div>
 </template>
 
 <script setup>
-import {ref} from "vue";
+import {inject, onBeforeMount, ref} from "vue";
 import Config from "/garren.config"
-import {User} from "@element-plus/icons-vue"
+import {Lock, User} from "@element-plus/icons-vue"
+import {ElNotification} from "element-plus";
+import store from "@/store";
+import NProgress from "nprogress";
+import router from "@/router";
 
-const pwd = ref(null)
-
-// const login_back = 'randomImage';
-const login_back = 'default'
+const $t = inject('$t'),
+    login_back = Config.login_background,
+    account = ref(null),
+    pwd = ref(null)
 
 let login_form = ref({
-  account: '',
-  password: ''
+      account: '',
+      password: ''
+    }),
+    passwordShow = ref(false),
+    passwordFocus = ref(false)
+
+//进入页面直接输入用户名可自动填入到账号输入框
+//已经输入用户名密码在任意位置按enter键登录
+onBeforeMount(() => {
+  window.addEventListener("keydown", e => {
+    // if (!(e.ctrlKey || e.metaKey || e.altKey || e.shiftKey || e.key === 'Enter') && login_form.value.account.length < 1 && !passwordFocus.value) account.value.focus()
+    if (e.key === 'Enter' && login_form.value.account.length > 0 && login_form.value.password.length > 0) login()
+  })
 })
 
-let passwordIptShow = ref(false)
-let passwordShow = ref(false)
-
 const login = () => {
-  console.log(login_form.value)
-}
-
-function inputPwd(e) {
-  if (e.offsetX > (180 - 22) && passwordIptShow.value) {
-    debugger
-    passwordShow.value = !passwordShow.value
+  NProgress.start()
+  if (!login_form.value.account) {
+    ElNotification({
+      message: $t('login.ipt_account'),
+      type: "error"
+    })
+    NProgress.done()
     return
   }
-  passwordIptShow.value = true
-  pwd.value.focus()
+  if (!login_form.value.password) {
+    ElNotification({
+      message: $t('login.ipt_password'),
+      type: "error"
+    })
+    NProgress.done()
+    return
+  }
+  store.dispatch("app/login", login_form.value)
+      .then(() => {
+        ElNotification({
+          message: $t('login.success'),
+          type: "success"
+        })
+        router.push({path: '/'})
+      })
+      .catch(() => {
+        ElNotification({
+          message: $t('login.fail'),
+          type: "error"
+        })
+      })
+      .finally(() => {
+        NProgress.done()
+      });
 }
 </script>
 
 <style lang="scss" scoped>
-$form_item-width: 180px;
 @keyframes movement {
   0%, 100% {
     background-size: 130vmax 130vmax,
@@ -125,22 +158,22 @@ $form_item-width: 180px;
 
 @keyframes wink-animation {
   0% {
-    height: 6px;
+    height: 8px;
   }
   10% {
     height: 1px;
   }
-  20% {
-    height: 6px;
-  }
   80% {
-    height: 6px;
+    height: 8px;
+  }
+  20% {
+    height: 8px;
   }
   90% {
     height: 1px;
   }
   100% {
-    height: 6px;
+    height: 8px;
   }
 }
 
@@ -151,38 +184,27 @@ $form_item-width: 180px;
 }
 
 #login_box {
-  @apply p-5 px-10 box-content backdrop-blur-lg rounded-3xl text-gray-darkest shadow-sm;
-  width: $form_item-width;
+  @apply w-72 p-5 px-10 box-content text-gray-darkest animate-bounceInUp;
 }
 
 .logo {
   @apply text-center;
   @apply cursor-default;
   & > span {
-    @apply text-5xl;
-    @apply text-white;
+    @apply text-white text-5xl font-bold overflow-hidden relative inline-block;
     font-family: "Dosis", sans-serif;
-    font-weight: 800;
     transition: color 0.5s 0.25s;
-    overflow: hidden;
-    position: relative;
     line-height: 1;
-    display: inline-block;
 
     &:hover {
-      transition: none;
-      color: transparent;
+      @apply transition-none text-transparent;
     }
 
     &::before {
-      @apply bg-white;
+      @apply bg-white w-full absolute left-0 top-1/2 ;
       content: '';
-      width: 100%;
       height: 6px;
       margin: -3px 0 0 0;
-      position: absolute;
-      left: 0;
-      top: 50%;
       transform: translate3d(-100%, 0, 0);
       transition: transform .4s cubic-bezier(.7, 0, .3, 1);
     }
@@ -192,32 +214,24 @@ $form_item-width: 180px;
     }
 
     & > span {
-      position: absolute;
-      height: 50%;
-      width: 100%;
-      left: 0;
-      top: 0;
-      overflow: hidden;
+      @apply absolute h-1/2 w-full left-0 top-0 overflow-hidden;
 
       &::before {
-        @apply text-rose-400;
+        @apply text-rose-400 absolute left-0 w-full;
         content: attr(data-letters);
-        position: absolute;
-        left: 0;
-        width: 100%;
         transition: transform .5s;
       }
 
       &:first-child::before {
-        top: 0;
+        @apply top-0;
         transform: translate3d(0, 100%, 0);
       }
 
       &:nth-child(2) {
-        top: 50%;
+        @apply top-1/2;
 
         &::before {
-          bottom: 0;
+          @apply bottom-0;
           transform: translate3d(0, -100%, 0);
         }
       }
@@ -232,52 +246,82 @@ $form_item-width: 180px;
 }
 
 .form_item {
-  display: flex;
-  flex-wrap: nowrap;
-  margin: 20px 0;
-  position: relative;
+  @apply flex flex-nowrap my-5 mx-0 relative;
+
+  .el-icon {
+    @apply text-white text-2xl mr-2;
+  }
 
   input {
-    @apply transition-all outline-none;
-    background: none;
-    margin-right: 10px;
-    width: 100%;
-    position: relative;
-    color: #ffffff;
-    opacity: 0;
+    @apply transition-all outline-none mr-2.5 w-full relative text-white bg-transparent;
 
     &::placeholder {
       color: rgba(255, 255, 255, .6);
     }
+  }
 
-    &:focus {
-      opacity: 1;
+  .pwd {
+    margin-right: 30px;
+  }
+
+  .show_pwd {
+    $box_size: 30px;
+    $dot_size: 8px;
+    @apply absolute right-0 cursor-pointer;
+    width: $box_size;
+    height: $box_size;
+
+    &:before, &:after {
+      content: "";
+      width: $dot_size;
+      height: $dot_size;
+      background: white;
+      position: absolute;
+      top: calc((#{$box_size} - #{$dot_size}) / 2);
+      border-radius: 50%;
+      transition: none;
+    }
+
+    &:before {
+      right: 4px;
+    }
+
+    &:after {
+      left: 4px;
+    }
+
+    &.active:before, &.active:after {
+      @apply bg-rose-300;
+      animation: wink-animation .6s linear alternate;
     }
   }
 
   .indicator {
-    @apply transition-all;
+    @apply transition-all w-1/12 h-0.5 opacity-0 bg-white absolute left-0 -bottom-1.5;
     transition-duration: .55s;
-    width: 10%;
-    opacity: 0;
-    height: 2px;
-    background: #ffffff;
-    position: absolute;
-    right: 0;
-    bottom: -5px;
   }
 
   & > input:focus + .indicator {
-    width: 100%;
-    opacity: 1;
+    @apply w-full opacity-100;
+  }
+
+  .link {
+    @apply text-gray-100 text-xs hover:scale-150 hover:underline hover:text-rose-300 leading-7 transition-all text-right ml-3;
+    transition-property: transform;
+
+    &:first-child {
+      @apply ml-auto;
+    }
+  }
+
+  .login_btn {
+    @apply w-10/12 mx-auto text-white border-2 hover:text-rose-300;
   }
 }
 
+//登录背景主题在这
 .login {
-  @apply min-h-screen;
-  @apply flex;
-  @apply items-center;
-  @apply justify-center;
+  @apply min-h-screen flex items-center justify-center;
 
   &_default {
     background-color: #e493d0;
@@ -310,201 +354,10 @@ $form_item-width: 180px;
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
     }
-
-    #login_box {
-      @apply backdrop-blur-3xl;
-      background: rgba(255, 255, 255, .1);
-      border: 1px solid rgba(255, 255, 255, .2);
-      border-right: 1px solid rgba(255, 255, 255, .1);
-      border-bottom: 1px solid rgba(255, 255, 255, .1);
-    }
   }
 
   &_randomImage {
-    @apply bg-cover;
-    @apply bg-fixed;
-    @apply bg-no-repeat;
-    @apply bg-center;
-    @apply animate-none;
-  }
-}
-
-.password {
-  $svg-color: #fff;
-  $text-color: #fff;
-  $medium-color: #ffa850;
-  $height: 30px;
-  @apply flex items-center justify-center relative;
-  & input {
-    @apply absolute appearance-none cursor-pointer m-0 p-0;
-    background: none;
-    outline: none;
-    border: 0;
-    width: 0;
-    height: $height;
-    transition: all .6s ease-out;
-    color: $text-color;
-    font: 400 14px 'Poppins', sans-serif;
-    z-index: 1;
-  }
-
-  .check {
-    display: none;
-    width: $height;
-    height: $height;
-    padding: 5px 2px 5px 8px;
-    box-sizing: border-box;
-    position: absolute;
-    right: 0;
-    z-index: 3;
-    cursor: pointer;
-
-    svg {
-      fill: none;
-      stroke: red;
-      stroke-width: 2px;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      stroke-dashoffset: 26;
-      stroke-dasharray: 26;
-      transition: stroke-dashoffset .6s ease;
-    }
-  }
-
-  .lock {
-    width: $form_item-width;
-    height: $height;
-    position: absolute;
-    right: 0;
-
-    &::before, &::after {
-      content: "";
-      position: absolute;
-      background: $svg-color;
-      pointer-events: none;
-    }
-
-    &::before {
-      right: 8px;
-      bottom: 9px;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      -webkit-transition: bottom .2s ease-out .4s, right .4s ease-out;
-      transition: bottom .2s ease-out .4s, right .4s ease-out;
-    }
-
-    &::after {
-      right: 10px;
-      bottom: 5px;
-      width: 2px;
-      height: 10px;
-      border-radius: 2px;
-      -webkit-transition: bottom .4s ease-out .4s, border-radius .2s ease-out .4s, width .2s ease-out .4s, right .4s ease-out, height .4s ease .8s;
-      transition: bottom .4s ease-out .4s, border-radius .2s ease-out .4s, width .2s ease-out .4s, right .4s ease-out, height .4s ease .8s;
-    }
-
-    svg {
-      display: block;
-      height: 100%;
-      width: 100%;
-      fill: none;
-      stroke: $svg-color;
-      stroke-width: 2px;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      stroke-dashoffset: 263;
-      stroke-dasharray: 0 263 71 263;
-      -webkit-transition: all .6s ease-out;
-      transition: all .6s ease-out;
-    }
-  }
-
-  &.active {
-    input {
-      width: 100%;
-      padding: 0 $height 0 5px;
-      cursor: text;
-      box-sizing: border-box;
-    }
-
-    .check {
-      @apply flex;
-      position: absolute;
-      z-index: 10;
-
-      &.submit {
-        svg {
-          stroke-dashoffset: 0;
-          stroke-dasharray: 26;
-        }
-
-        & ~ .lock {
-          &::before, &::after {
-            opacity: 0;
-            right: 9px;
-            -webkit-transition: right .2s ease-out, opacity .2s ease-out;
-            transition: right .2s ease-out, opacity .2s ease-out;
-          }
-        }
-      }
-
-      &.active {
-        & ~ .lock {
-          &::before {
-            animation: wink-animation .6s linear alternate;
-            background: $medium-color;
-          }
-
-          &::after {
-            animation: wink-animation .6s linear alternate;
-            background: $medium-color;
-          }
-        }
-      }
-    }
-
-    .lock {
-      &::before {
-        right: 3px;
-        bottom: 11px;
-        transition: bottom .1s ease-out .1s, right .4s ease-out .2s, background .2s ease-out, opacity .2s ease-out;
-      }
-
-      &::after {
-        right: 15px;
-        bottom: 11px;
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        transition: height .2s ease-out, bottom .2s ease-out, border-radius .2s ease-out .2s, width .2s ease-out .2s, right .4s ease-out .2s, background .2s ease-out, opacity .2s ease-out;
-      }
-
-      svg {
-        stroke-dashoffset: 207;
-        stroke-dasharray: 0 263 177 263;
-      }
-    }
-
-    .indicator {
-      @apply w-72;
-      height: $height;
-      position: absolute;
-      right: 0;
-
-      &::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        bottom: 0;
-        width: 0;
-        height: 2px;
-        border-radius: 5px;
-        background: transparent;
-        z-index: 3;
-        transition: background .6s ease-out, width .6s ease-out;
-      }
-    }
+    @apply bg-cover bg-fixed bg-no-repeat bg-center animate-none;
   }
 }
 </style>

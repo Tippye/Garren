@@ -1,4 +1,7 @@
 import Cookie from 'js-cookie'
+import {login as _login} from "@/api/user";
+import _User from "@/entity/User";
+import {setToken} from "@/utils/auth";
 
 const state = {
     //侧边栏
@@ -12,7 +15,7 @@ const state = {
     //登录设备：web | desktop | android | ios
     device: 'web',
     //当前登录用户
-    user: null
+    user: Cookie.get('user') || null
 }
 
 const mutations = {
@@ -28,6 +31,10 @@ const mutations = {
     },
     TOGGLE_DEVICE: (state, decive) => {
         state.device = decive
+    },
+    SET_USER: (state, user) => {
+        state.user = user
+        Cookie.set('user', user)
     }
 }
 
@@ -41,6 +48,28 @@ const actions = {
     toggleDevice({commit}, {device}) {
         commit('TOGGLE_DEVICE', device)
     },
+    /**
+     * 登录，将用户数据保存到store
+     * @param commit
+     * @param value
+     * @returns {Promise<unknown>}
+     */
+    login({commit}, value) {
+        return new Promise((resolve, reject) => {
+            _login(value)
+                .then(res => {
+                    if (res['login-token']) {
+                        setToken(res['login-token'])
+                        let user = new _User(res.user)
+                        commit("SET_USER", user)
+                        resolve(user)
+                        return
+                    }
+                    reject()
+                })
+                .catch(e => reject(e))
+        })
+    }
 }
 
 export default {

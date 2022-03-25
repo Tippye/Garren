@@ -26,4 +26,33 @@
     //chrome svg默认颜色不继承
     color: inherit;
   }
+
+  .el-button > span {
+    color: inherit;
+  }
+
+  .el-notification {
+    background-color: #1f2d3d;
+  }
+
+  .glasses {
+    @apply backdrop-blur-lg rounded-3xl shadow-sm bg-white bg-opacity-10 dark:bg-gray-darkest dark:bg-opacity-40;
+    border: 1px solid rgba(var(--el-bg-color), 0.2);
+    border-right: 1px solid rgba(var(--el-bg-color), 0.1);
+    border-bottom: 1px solid rgba(var(--el-bg-color), 0.1);
+  }
+}
+
+.el-notification {
+  @extend .glasses;
+  @apply bg-opacity-60 dark:bg-opacity-60;
+}
+
+.dark .el-notification {
+  --el-notification-title-color: #fffbf0;
+  --el-notification-content-color: #fffbf0;
+}
+
+.el-notification__content * {
+  color: inherit;
 }

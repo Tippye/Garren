@@ -73,7 +73,7 @@ function makeConstantRoutes() {
 let router = createRouter()
 
 //免登录页面白名单
-const whiteList = ['/', '/about', '/login', 'register']
+const whiteList = ['/', '/about', '/login', '/register', '/404']
 
 /**
  * 导航守卫,可在此配置权限
@@ -81,24 +81,12 @@ const whiteList = ['/', '/about', '/login', 'register']
  * @Doc: https://router.vuejs.org/zh/guide/advanced/navigation-guards.html
  */
 router.beforeEach((to, from, next) => {
-    //TODO：进度条开始加载
-    if (getToken()) {
-        // to.meta.title && store.dispatch('settings/setTitle',to.meta.title)
-
-        if (to.path === '/login') {
-            //已经登录的瞎凑什么热闹
-            next({path: '/'})
-            //TODO：进度条完成
-        } else {
-            next()
-        }
-    } else {
-        if (whiteList.indexOf(to.path) > -1) {
-            next()
-        } else {
-            next({path: '/login'})
-            //TODO: 进度条完成
-        }
+    if (whiteList.indexOf(to.path) > -1 || getToken()) next()
+    else {
+        let a = []
+        router.getRoutes().forEach(r => r.path === to.path && a.push(r.path))
+        if (a.length < 1 || a[0] === '/404') next({path: '/404'})
+        next({path: '/login'})
     }
 });
 

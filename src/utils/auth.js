@@ -1,18 +1,22 @@
+import Cookie from "js-cookie";
+
 /**
- * TODO：获取Token
+ * 获取Token
  */
 export function getToken() {
-    return undefined
+    return Cookie.get("token")
 }
 
 /**
- * TODO：设置Token
+ * 设置Token
  */
-export function setToken() {
+export function setToken(token) {
+    Cookie.set("token", token)
 }
 
 /**
- * TODO: 删除Token
+ * 删除Token
  */
 export function removeToken() {
+    Cookie.remove("token")
 }

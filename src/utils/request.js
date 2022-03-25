@@ -4,7 +4,7 @@ import {getToken} from "@/utils/auth";
 import {blobValidate, tansParams} from "@/utils/base";
 import Cookie from "js-cookies";
 import errorCode from "@/utils/errorCode";
-import {ElLoading, ElMessage, ElMessageBox} from "element-plus";
+import {ElLoading, ElMessageBox, ElNotification} from "element-plus";
 import store from "@/store";
 import {saveAs} from 'file-saver'
 
@@ -90,14 +90,15 @@ service.interceptors.response.use(
             }
             return Promise.reject('无效的会话，或者会话已过期，请重新登录。')
         } else if (code === 500) {
-            ElMessage({
+            ElNotification({
                 message: msg,
                 type: 'error'
             })
             return Promise.reject(new Error(msg))
         } else if (code !== 200) {
-            Notification.error({
-                title: msg
+            ElNotification({
+                title: msg,
+                type: 'error'
             })
             return Promise.reject('error')
         } else {
@@ -114,7 +115,7 @@ service.interceptors.response.use(
         } else if (message.includes("Request failed with status code")) {
             message = "系统接口" + message.substr(message.length - 3) + "异常";
         }
-        ElMessage({
+        ElNotification({
             message: message,
             type: 'error',
             duration: 5 * 1000
@@ -146,12 +147,12 @@ export function download(url, params, filename) {
             const resText = await data.text();
             const rspObj = JSON.parse(resText);
             const errMsg = errorCode[rspObj.code] || rspObj.msg || errorCode['default']
-            ElMessage.error(errMsg);
+            ElNotification.error(errMsg);
         }
         downloadLoadingInstance.close();
     }).catch((r) => {
         console.error(r)
-        ElMessage.error('下载文件出现错误，请联系管理员！')
+        ElNotification.error('下载文件出现错误，请联系管理员！')
         downloadLoadingInstance.close();
     })
 }

@@ -7,6 +7,7 @@ import store from "@/store"
 import zhCn from "element-plus/lib/locale/lang/zh-cn";
 import en from "element-plus/lib/locale/lang/en"
 import {$t, i18n} from "@/language";
+import 'nprogress/nprogress.css'
 
 //监听系统深色模式的切换
 store.dispatch("settings/toggleDarkMode", {value: window.matchMedia('(prefers-color-scheme: dark)').matches})

@@ -1,6 +1,7 @@
 import {createRouter as _createRouter, createWebHistory} from "vue-router";
 import Layout from "@/layout/index.vue";
 import {getToken} from "@/utils/auth";
+import NProgress from "nprogress";
 
 /**
  * 创建路由组件
@@ -81,6 +82,7 @@ const whiteList = ['/', '/about', '/login', '/register', '/404']
  * @Doc: https://router.vuejs.org/zh/guide/advanced/navigation-guards.html
  */
 router.beforeEach((to, from, next) => {
+    NProgress.start()
     if (whiteList.indexOf(to.path) > -1 || getToken()) next()
     else {
         let a = []
@@ -91,7 +93,7 @@ router.beforeEach((to, from, next) => {
 });
 
 router.afterEach(() => {
-    //TODO: 进度条完成
+    NProgress.done()
 })
 
 export default router

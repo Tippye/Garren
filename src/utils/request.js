@@ -2,7 +2,7 @@ import axios from 'axios'
 import Config from "../../garren.config";
 import {getToken} from "@/utils/auth";
 import {blobValidate, tansParams} from "@/utils/base";
-import Cookie from "js-cookies";
+import Cookie from "js-cookie";
 import errorCode from "@/utils/errorCode";
 import {ElLoading, ElMessageBox, ElNotification} from "element-plus";
 import store from "@/store";
@@ -37,9 +37,9 @@ service.interceptors.request.use(config => {
             data: typeof config.data === 'object' ? JSON.stringify(config.data) : config.data,
             time: new Date().getTime()
         }
-        const sessionObj = JSON.parse(Cookie.getItem('sessionObj'))
+        const sessionObj = JSON.parse(Cookie.get('sessionObj'))
         if (sessionObj === undefined || sessionObj === null || sessionObj === '') {
-            Cookie.setItem('sessionObj', JSON.stringify(requestObj))
+            Cookie.set('sessionObj', JSON.stringify(requestObj))
         } else {
             const s_url = sessionObj.url;                  // 请求地址
             const s_data = sessionObj.data;                // 请求数据
@@ -50,7 +50,7 @@ service.interceptors.request.use(config => {
                 console.warn(`[${s_url}]: ` + message)
                 return Promise.reject(new Error(message))
             } else {
-                Cookie.setItem('sessionObj', JSON.stringify(requestObj))
+                Cookie.set('sessionObj', JSON.stringify(requestObj))
             }
         }
     }

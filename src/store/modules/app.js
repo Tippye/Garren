@@ -1,7 +1,7 @@
 import Cookie from 'js-cookie'
 import {login as _login} from "@/api/user";
 import _User from "@/entity/User";
-import {setToken} from "@/utils/auth";
+import {removeToken, setToken} from "@/utils/auth";
 
 const state = {
     //侧边栏
@@ -15,7 +15,7 @@ const state = {
     //登录设备：web | desktop | android | ios
     device: 'web',
     //当前登录用户
-    user: Cookie.get('user') || null
+    user: Cookie.get('user') ? JSON.parse(Cookie.get('user')) : null
 }
 
 const mutations = {
@@ -34,8 +34,12 @@ const mutations = {
     },
     SET_USER: (state, user) => {
         state.user = user
-        Cookie.set('user', user)
-    }
+        Cookie.set('user', JSON.stringify(user))
+    },
+    REMOVE_USER: (state) => {
+        state.user = null
+        Cookie.remove("user");
+    },
 }
 
 const actions = {
@@ -69,7 +73,19 @@ const actions = {
                 })
                 .catch(e => reject(e))
         })
-    }
+    },
+    /**
+     * 退出登录
+     * @param commit
+     * @param value
+     */
+    logout({commit}, value) {
+        return new Promise(resolve => {
+            commit("REMOVE_USER")
+            removeToken()
+            resolve()
+        })
+    },
 }
 
 export default {

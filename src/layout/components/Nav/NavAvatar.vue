@@ -3,12 +3,12 @@
     <img :src="user?user.head_img:site_avatar" alt=""
          class="h-9 transition-all group-hover:scale-125 rounded-full shadow">
     <div
-        class="w-44 bg-white dark:bg-gray-darkest absolute right-0 invisible group-hover:visible shadow group-hover:animate-slideInRight">
+        class="w-44 bg-white dark:bg-gray-darkest absolute right-0 invisible group-hover:visible shadow group-hover:animate-bounceInUp">
       <ul>
         <template v-for="item in avatar_list">
           <li v-if="item&&item.show"
-              class="w-full py-2 px-2.5 shadow-sm dark:text-gray-100 cursor-pointer">
-            <router-link v-if="item.path" :to="item.path">{{ item.text }}</router-link>
+              class="w-full py-2 px-2.5 shadow-sm dark:text-gray-100 cursor-pointer" @click="item.fun()">
+            <router-link v-if="item.path" :to="item.path" class="w-full h-full block">{{ item.text }}</router-link>
             <span v-else class="text-inherit">{{ item.text }}</span>
           </li>
         </template>
@@ -67,54 +67,69 @@ import {computed, inject} from "vue";
 import {ElNotification} from "element-plus";
 import {i18n} from "@/language";
 
-const $t = inject('$t')
-const site_avatar = store.state.settings.site_avatar
-const user = store.state.app.user
-let language = store.state.settings.lang
-let darkMode = computed(() => store.state.settings.darkMode)
-const avatar_list = [{
-  text: $t('login.login'),
-  path: '/login',
-  show: !user,
-}, {
-  text: $t('login.register'),
-  path: '/register',
-  show: !user,
-}, {
-  text: $t('avatar_menu.self_material'),
-  path: '',
-  show: !!user,
-}, {
-  text: $t('avatar_menu.admin_manage'),
-  path: '',
-  show: !!user,
-}, {
-  text: $t('login.logout'),
-  fun: null,
-  show: !!user,
-}]
-const language_list = i18n.global.messages
+const $t = inject('$t'),
+    site_avatar = store.state.settings.site_avatar,
+    user = store.state.app.user,
+    language_list = i18n.global.messages
+let language = store.state.settings.lang,
+    darkMode = computed(() => store.state.settings.darkMode)
 
+/**
+ * 切换语言
+ * @param lang
+ */
 const handleSetLanguage = (lang) => {
   store.dispatch('settings/changeLanguage', lang)
-      .then((res) => {
+      .then(() => {
         ElNotification({
           title: '语言更换成功',
           type: 'success'
         })
-        console.log(res)
         location.reload()
       })
 }
+/**
+ * 切换夜间模式
+ */
 const handleSetDarkMode = () => {
-  console.log('handleSetDarkMode')
   store.dispatch('settings/toggleDarkMode', {
     value: !darkMode.value
   })
-
+}
+/**
+ * 退出登录
+ */
+const logout = () => {
+  store.dispatch("app/logout")
+      .then(() => {
+        location.reload()
+      })
 }
 
-
+//头像弹出菜单
+const avatar_list = [
+  {
+    text: $t('login.login'),
+    path: '/login',
+    show: !user,
+  }, {
+    text: $t('login.register'),
+    path: '/register',
+    show: !user,
+  }, {
+    text: $t('avatar_menu.self_material'),
+    path: '',
+    show: !!user,
+  }, {
+    text: $t('avatar_menu.admin_manage'),
+    path: '',
+    show: !!user,
+  }, {
+    text: $t('login.logout'),
+    fun: logout,
+    show: !!user,
+  }
+]
 </script>
 
 <style lang="scss" scoped>

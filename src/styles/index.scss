@@ -12,6 +12,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "Dosis";
+  font-style: normal;
+  src: url("http://fonts.gstatic.com/s/dosis/v25/HhyJU5sn9vOmLxNkIwRSjTVNWLEJt7Ql2xMCbKsUPqjm.woff") format("woff");
+}
+
 @layer base {
   * {
     @apply text-gray-darkest;
@@ -41,6 +47,14 @@
     border-right: 1px solid rgba(var(--el-bg-color), 0.1);
     border-bottom: 1px solid rgba(var(--el-bg-color), 0.1);
   }
+
+  .truncate-2 {
+    @apply truncate;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
 }
 
 .el-notification {
@@ -55,4 +69,10 @@
 
 .el-notification__content * {
   color: inherit;
+}
+
+// 愿逝者安息🙏
+html {
+  //filter: grayscale(100%);
+  //filter: progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
 }

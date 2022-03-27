@@ -177,11 +177,6 @@ const login = () => {
   }
 }
 
-@font-face {
-  font-family: "Dosis";
-  font-style: normal;
-  src: url("http://fonts.gstatic.com/s/dosis/v25/HhyJU5sn9vOmLxNkIwRSjTVNWLEJt7Ql2xMCbKsUPqjm.woff") format("woff");
-}
 
 #login_box {
   @apply w-72 p-5 px-10 box-content text-gray-darkest animate-bounceInUp;

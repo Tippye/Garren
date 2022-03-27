@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^1.0.1",
+    "@wangeditor/editor-for-vue": "^5.1.8-11",
     "axios": "^0.26.0",
     "element-plus": "^2.0.2",
     "file-saver": "^2.0.5",

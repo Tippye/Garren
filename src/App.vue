@@ -6,7 +6,3 @@ import locale from 'element-plus/lib/locale/lang/zh-cn'</script>
     <router-view/>
   </el-config-provider>
 </template>
-
-<style>
-
-</style>

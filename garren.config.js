@@ -9,6 +9,9 @@ const Dev = true
 const login_background = 'randomImage'
 // const login_background = 'default'
 
+//图片家在错误时占位图
+const img_load_err = 'https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg'
+
 const devConfig = Dev ? {
     server: 'http://api.tippy.icu', token: ''
 } : {
@@ -16,5 +19,5 @@ const devConfig = Dev ? {
 }
 
 export default {
-    ...devConfig, name, version: '1.0.0', login_background
+    ...devConfig, name, version: '1.0.0', login_background, img_load_err
 }

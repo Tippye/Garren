@@ -14,7 +14,7 @@ export let isRelogin = {show: false}
 axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded'
 const service = axios.create({
     baseURL: Config.server,
-    timeout: 1000
+    timeout: 5000
 })
 
 //请求拦截器

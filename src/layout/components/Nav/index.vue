@@ -1,5 +1,5 @@
 <template>
-  <div class="h-16">
+  <div>
     <div id="nav"
          class="w-full px-10 py-2 fixed z-40 top-0 left-0 bg-opacity-90 backdrop-blur-md box-border grid gap-1">
       <div class="h-10 flex flex-nowrap items-center">

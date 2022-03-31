@@ -1,7 +1,7 @@
 <template>
   <div class="h-9 relative group mx-2">
-    <img :src="user?user.head_img:site_avatar" alt=""
-         class="h-9 transition-all group-hover:scale-125 rounded-full shadow">
+    <el-avatar :src="user?user.head_img:site_avatar" alt=""
+               class="h-9 transition-all group-hover:scale-125 shadow"/>
     <div
         class="w-44 bg-white dark:bg-gray-darkest absolute right-0 invisible group-hover:visible shadow group-hover:animate-bounceInUp">
       <ul>

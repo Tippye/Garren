@@ -12,6 +12,8 @@ const state = {
     site_fav: Cookie.get('site_fav') || './favicon.ico',
     //站点描述
     site_desc: Cookie.get('site_desc') | '',
+    //站点管检测
+    site_keywords: Cookie.get('site_keywords') | '',
     //站点头像
     site_avatar: Cookie.get('site_avatar') || 'http://api.tippy.icu/storage/users/uid-1/my-head.png',
     //备案信息
@@ -23,7 +25,11 @@ const state = {
     //夜间模式
     darkMode: false,
     //站点语言
-    lang: Cookie.get('lang') || 'zh'
+    lang: Cookie.get('lang') || 'zh',
+    //首页文字
+    home_text: true,
+    //首页第三方链接
+    webmaster: Cookie.get('webmaster') ? JSON.parse(Cookie.get('webmaster')) : {}
 }
 
 const mutations = {

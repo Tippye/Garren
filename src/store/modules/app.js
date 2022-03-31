@@ -12,6 +12,8 @@ const state = {
         withoutAnimation: false,
         notice: null
     },
+    //nav栏高度
+    navHeight: '4rem',
     //登录设备：web | desktop | android | ios
     device: 'web',
     //当前登录用户

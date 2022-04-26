@@ -37,7 +37,8 @@ service.interceptors.request.use(config => {
             data: typeof config.data === 'object' ? JSON.stringify(config.data) : config.data,
             time: new Date().getTime()
         }
-        const sessionObj = JSON.parse(Cookie.get('sessionObj'))
+        let sessionObj = Cookie.get('sessionObj')
+        if (sessionObj) sessionObj = JSON.parse(sessionObj)
         if (sessionObj === undefined || sessionObj === null || sessionObj === '') {
             Cookie.set('sessionObj', JSON.stringify(requestObj))
         } else {
@@ -68,9 +69,7 @@ service.interceptors.response.use(
         // 获取错误信息
         const msg = errorCode[code] || res.data.msg || errorCode['default']
         // 二进制数据则直接返回
-        if (res.request.responseType === 'blob' || res.request.responseType === 'arraybuffer') {
-            return res.data
-        }
+        if (res.request.responseType === 'blob' || res.request.responseType === 'arraybuffer') return res.data
         if (code === 401) {
             if (!isRelogin.show) {
                 isRelogin.show = true;
